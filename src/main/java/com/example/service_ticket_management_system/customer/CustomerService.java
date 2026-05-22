@@ -1,8 +1,8 @@
 package com.example.service_ticket_management_system.customer;
 
+import com.example.service_ticket_management_system.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 
@@ -22,7 +22,7 @@ public class CustomerService {
 
     public CustomerResponseDTO findById(Long id) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID: " + id));
         return toResponseDTO(customer);
     }
 
@@ -35,7 +35,7 @@ public class CustomerService {
 
     public CustomerResponseDTO update(Long id, CustomerRequestDTO requestDTO) {
         Customer existing = customerRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID: " + id));
         existing.setEmail(requestDTO.email());
         existing.setName(requestDTO.name());
         existing.setPhone(requestDTO.phone());
@@ -46,7 +46,7 @@ public class CustomerService {
 
     public void delete(Long id) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID: " + id));
 
         customerRepository.delete(customer);
     }

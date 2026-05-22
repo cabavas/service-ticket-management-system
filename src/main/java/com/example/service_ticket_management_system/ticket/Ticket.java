@@ -24,8 +24,8 @@ public class Ticket {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false, columnDefinition = "default OPEN")
-    private Status status;
+    @Column(nullable = false)
+    private Status status = Status.OPEN;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
@@ -91,6 +91,14 @@ public class Ticket {
         this.status = status;
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -114,4 +122,5 @@ public class Ticket {
                 ", status=" + status +
                 '}';
     }
+
 }
