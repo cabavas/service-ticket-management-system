@@ -22,9 +22,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/tickets").hasRole("CLIENT")
-                        .requestMatchers("/api/tickets/*/close").hasRole("TECHNICIAN")
-                        .requestMatchers("/api/tickets", "/api/tickets/**").authenticated()
+                        .requestMatchers("/api/tickets").authenticated()
+                        .requestMatchers("/api/customers").authenticated()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().permitAll()
                 )

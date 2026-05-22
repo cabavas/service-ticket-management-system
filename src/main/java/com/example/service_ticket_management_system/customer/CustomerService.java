@@ -4,6 +4,7 @@ import com.example.service_ticket_management_system.exception.ResourceNotFoundEx
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -15,11 +16,13 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
+    @Transactional(readOnly = true)
     public Page<CustomerResponseDTO> findAll(Pageable pageable) {
         return customerRepository.findAll(pageable)
                 .map(this::toResponseDTO);
     }
 
+    @Transactional(readOnly = true)
     public CustomerResponseDTO findById(Long id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID: " + id));

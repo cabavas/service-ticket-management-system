@@ -8,9 +8,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
-    @Query("SELECT DISTINCT t FROM Ticket t JOIN FETCH t.customer")
+    @Query(value = "SELECT t FROM Ticket t JOIN FETCH t.customer",
+            countQuery = "SELECT COUNT(t) FROM Ticket t")
     Page<Ticket> findAllWithCustomer(Pageable pageable);
 
-    @Query("SELECT DISTINCT t FROM Ticket t JOIN FETCH t.customer WHERE t.status = :status")
+    @Query(value = "SELECT t FROM Ticket t JOIN FETCH t.customer WHERE t.status = :status",
+            countQuery = "SELECT COUNT(t) FROM Ticket t WHERE t.status = :status")
     Page<Ticket> findByStatusWithCustomer(Status status, Pageable pageable);
 }

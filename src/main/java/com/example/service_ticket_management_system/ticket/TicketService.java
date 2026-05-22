@@ -6,6 +6,7 @@ import com.example.service_ticket_management_system.exception.ResourceNotFoundEx
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class TicketService {
         this.customerRepository = customerRepository;
     }
 
+    @Transactional(readOnly = true)
     public Page<TicketResponseDTO> findAll(Pageable pageable, Status status) {
         Page<Ticket> ticketPage;
         if (status != null) {
@@ -31,12 +33,14 @@ public class TicketService {
         return ticketPage.map(this::toResponseDTO);
     }
 
+    @Transactional(readOnly = true)
     public TicketResponseDTO findById(Long id) {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ID: " + id));
         return this.toResponseDTO(ticket);
     }
 
+    @Transactional
     public TicketResponseDTO create(TicketRequestDTO requestDTO) {
         Customer customer = customerRepository.findById(requestDTO.customerId())
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID: " + requestDTO.customerId()));
@@ -50,6 +54,7 @@ public class TicketService {
         return toResponseDTO(saved);
     }
 
+    @Transactional
     public TicketResponseDTO update(Long id, TicketRequestDTO requestDTO) {
         Ticket existing = ticketRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ID: " + id));
@@ -60,6 +65,7 @@ public class TicketService {
         return toResponseDTO(updated);
     }
 
+    @Transactional
     public void delete(Long id) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found with ID: " + id));
